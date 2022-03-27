@@ -18,5 +18,9 @@ for entry in feed.entries:
 
     filename = f'{year}-{month}-{day}-{title}.mp3'
     
-    print(filename)
-    #urllib.request.urlretrieve(fileUrl, filename)
+    print("Retrieving " + filename)
+    urllib.request.urlretrieve(fileUrl, filename)
+    
+    date=datetime.datetime(year=year, month=month, day=day)
+    modTime=time.mktime(date.timetuple())
+    os.utime(filename, (modTime,modTime))
