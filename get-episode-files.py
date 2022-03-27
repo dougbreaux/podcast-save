@@ -1,5 +1,6 @@
 import feedparser
 import urllib.request
+import re
 import datetime
 import time
 import os
@@ -16,11 +17,15 @@ for entry in feed.entries:
     month = published.tm_mon
     day = published.tm_mday
 
-    filename = f'{year}-{month}-{day}-{title}.mp3'
+    # zero-pad single-digit month/day
+    filename = f'{year}-{month:02d}-{day:02d}-{title}.mp3'
+
+    # remove/replace illegal filename chars, like '?'
+    valid_filename = re.sub('[^\w_.)( -]', '', filename)
     
-    print("Retrieving " + filename)
-    urllib.request.urlretrieve(fileUrl, filename)
+    print("Retrieving " + valid_filename)
+    urllib.request.urlretrieve(fileUrl, valid_filename)
     
     date=datetime.datetime(year=year, month=month, day=day)
     modTime=time.mktime(date.timetuple())
-    os.utime(filename, (modTime,modTime))
+    os.utime(valid_filename, (modTime,modTime))
